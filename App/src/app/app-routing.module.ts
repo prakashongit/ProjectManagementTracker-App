@@ -11,6 +11,19 @@ const routes: Routes = [
   {
     path: 'registration',
     component: RegistrationComponent
+  },
+  {
+    path: 'manager',
+    loadChildren: () => import('./manager/manager.module').then( module => module.ManagerModule)
+  },
+  {
+    path: 'member',
+    loadChildren: () => import('./member/member.module').then( module => module.MemberModule)
+  },
+  {
+    path:'**',
+    redirectTo:'login',
+    pathMatch:'full'
   }
 ];
 

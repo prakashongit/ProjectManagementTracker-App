@@ -1,1 +1,62 @@
-<p>registration works!</p>
+<div class="row">
+    <div class="col-1">
+        <button type="button" class="btn btn-secondary" (click)="back()">
+            Back
+        </button>
+    </div>
+<div class="col-6" *ngIf="!isValidUser">
+    <h4>Sign up</h4>
+    <div class="mb-3">
+        <label for="nav-item" class="form-label">Name<span style="color: red;">*</span></label>
+        <input type="email" class="form-control" id="name" placeholder="First & Last Name" [(ngModel)]="name">
+    </div>
+    <div class="mb-3">
+        <label for="username" class="form-label">Username<span style="color: red;">*</span></label>
+        <input type="text" class="form-control" id="username" placeholder="Username" [(ngModel)]="userName">
+    </div>
+    <div class="mb-3">
+        <label for="passcode" class="form-label">Passcode<span style="color: red;">*</span></label>
+        <input type="text" class="form-control" id="passcode" placeholder="Ex: jCXdQAq6WB" [(ngModel)]="passcode">
+    </div>
+    <button type="button" class="btn btn-primary" (click)="checkUser()">
+        Sign-up
+    </button>
+    <div *ngIf="isLoading" class="spinner-border"  role="status">
+        <span class="visually-hidden">Loading...</span>
+      </div>
+</div>
+<div class="col-6" *ngIf="isValidUser">
+    <h4>Change Password</h4>
+    <div class="mb-3">
+        <label for="password" class="form-label">New Password<span style="color: red;">*</span></label>
+        <input type="text" class="form-control" id="password" placeholder="password" [(ngModel)]="password">
+    </div>
+    <div class="mb-3">
+        <label for="confirmpassword" class="form-label">Confirm Password<span style="color: red;">*</span></label>
+        <input type="text" class="form-control" id="confirmpassword" placeholder="confirm password" [(ngModel)]="confirmPassword">
+    </div>
+    <button type="button" class="btn btn-primary" (click)="updateUser()">
+        Change Password
+    </button>
+    <div *ngIf="isLoading" class="spinner-border"  role="status">
+        <span class="visually-hidden">Loading...</span>
+      </div>
+</div>
+</div>
+<br>
+<div class="row" *ngIf="success">
+    <div class="col-6">
+        <alert type="success">
+            <strong>Well done!</strong> You successfully Signed up. please <a href="/login">click here</a> to login
+        </alert>
+    </div>
+    
+</div>
+<div class="row" *ngIf="invalidform">
+    <div class="col-6">
+        <alert type="danger">
+            <strong>{{message}}</strong>
+          </alert>
+    </div>
+    
+</div>

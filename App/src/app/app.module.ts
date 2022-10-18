@@ -8,6 +8,13 @@ import { RegistrationComponent } from './registration/registration.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { FormsModule } from '@angular/forms';
 import { StoreModule } from '@ngrx/store';
+import { authInterceptorProviders } from './helpers/auth.interceptor';
+import { HttpClientModule } from '@angular/common/http';
+import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
+import { ButtonsModule } from 'ngx-bootstrap/buttons';
+import { AlertModule } from 'ngx-bootstrap/alert';
+import { ModalModule, BsModalService } from 'ngx-bootstrap/modal';
+import { SharedModule } from './shared/shared.module';
 
 @NgModule({
   declarations: [
@@ -20,9 +27,16 @@ import { StoreModule } from '@ngrx/store';
     AppRoutingModule,
     BrowserAnimationsModule,
     FormsModule,
-    StoreModule.forRoot({}, {})
+    StoreModule.forRoot({}, {}),
+    HttpClientModule,
+    BsDropdownModule.forRoot(),
+    ButtonsModule.forRoot(),
+    AlertModule.forRoot(),
+    BsDropdownModule,
+    ModalModule,
+    SharedModule
   ],
-  providers: [],
+  providers: [authInterceptorProviders,BsModalService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

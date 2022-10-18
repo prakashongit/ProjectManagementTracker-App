@@ -1,1 +1,284 @@
-<p>team-manager works!</p>
+<div class="row">
+    <div>
+      <alert [type]="alert.type" [dismissible]="dismissible" *ngIf="isUserCreated">{{ alert.msg }}</alert>
+    </div>
+    <div class="col-2">
+      <h6 [ngStyle]="memberStyle" (click)="getMembers()">My Team</h6>
+      <h6 [ngStyle]="managerStyle" (click)="getManagers()">Managers</h6>
+    </div>
+    <div class="col-10" *ngIf="isManagerList">
+        <div class="row ">
+            <div class="col-3 col-offset-3">
+                <button type="button" class="btn btn-primary" (click)="openModal(managerTemplate,false)">
+                    Add Manager
+                </button>
+            </div>
+            
+        </div>
+        <div class="row">
+            <div class="col-12">
+                <table class="table">
+                    <thead>
+                      <tr>
+                        <th scope="col">Username</th>
+                        <th scope="col">Name</th>
+                        <th scope="col">Years Of Experience</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr *ngFor="let user of managers | pagination:bigCurrentPage:itemsPerPage">
+                        <td>{{user.userName}}</td>
+                        <td>{{user.name}}</td>
+                        <td>{{user.yearsOfExperience}}</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                  <pagination [totalItems]="totalCount" *ngIf="totalCount != 0" [(ngModel)]="bigCurrentPage" [itemsPerPage]="itemsPerPage"></pagination>
+            </div>
+        </div>
+        
+    </div>
+    <div class="col-9" *ngIf="isMemberList">
+        <div class="row ">
+            <div class="col-3">
+                <button type="button" class="btn btn-primary" (click)="openModal(memberTemplate)">
+                    Add Team Member
+                </button>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12">
+                <table class="table">
+                    <thead>
+                      <tr>
+                        <th scope="col">Username</th>
+                        <th scope="col">Name</th>
+                        <th scope="col">Years Of Experience</th>
+                        <th scope="col">Skills</th>
+                        <th scope="col">Project Start Date</th>
+                        <th scope="col">Project End Date</th>
+                        <th scope="col">Assign Task</th>
+                        <th scope="col">Allocation %</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr id="noRecordTR" *ngIf="teamMembers.length == 0"> 
+                        <td colspan="7">No Record Found</td>                              
+                      </tr>
+                      <tr *ngFor="let user of teamMembers | pagination:bigCurrentPage:itemsPerPage">
+                        <td>{{user.userName}}</td>
+                        <td>{{user.name}}</td>
+                        <td>{{user.yearsOfExperience}}</td>
+                        <td>{{user.skills}}</td>
+                        <td>{{user.startDate | date }}</td>
+                        <td>{{user.endDate | date }}</td>
+                        <td><button type="button" class="btn btn-primary btn-sm" (click)="currentUser = user;openModal(assignTask);">Add</button></td>
+                        <td><button type="button" class="btn btn-primary btn-sm" (click)="currentUser = user;openModal(updateAllocationTemplate);">{{user.allowcationPercentage}}</button></td>
+                      </tr>
+                    </tbody>
+                  </table>
+                  <pagination [totalItems]="totalCount" *ngIf="totalCount != 0" [(ngModel)]="bigCurrentPage" [itemsPerPage]="itemsPerPage"></pagination>
+            </div>
+        </div>
+        
+    </div>
+</div>
+
+<!-- Manager Modal -->
+<ng-template #managerTemplate>
+    <div class="modal-header">
+       <h4 class="modal-title pull-left">Add Manager</h4>
+       <button type="button" class="close pull-right" aria-label="Close" (click)="modalRef.hide()">
+          <span aria-hidden="true">×</span>
+       </button>
+    </div>
+    <div class="modal-body">
+          <div class="mb-3">
+            <label for="nav-item" class="form-label">Name<span style="color: red;">*</span></label>
+            <input type="text" class="form-control" id="name" placeholder="First & Last Name" [(ngModel)]="name">
+            <p style="color: red;" *ngIf="isSubmit && !name">Name is required</p>
+          </div>
+          <div class="mb-3">
+              <label for="username" class="form-label">Username<span style="color: red;">*</span></label>
+              <input type="text" class="form-control" id="username" placeholder="Username" [(ngModel)]="userName">
+              <p style="color: red;" *ngIf="isSubmit && !userName">Username is required</p>
+          </div>
+          <div class="mb-3">
+            <label for="username" class="form-label">Years of Experience</label>
+            <input type="number" class="form-control" id="username" placeholder="years of experience" [(ngModel)]="yearsOfExperience">
+        </div>
+          <div class="mb-3">
+            <label for="password" class="form-label">New Password<span style="color: red;">*</span></label>
+            <input type="password" class="form-control" id="password" placeholder="password" [(ngModel)]="password">
+            <p style="color: red;" *ngIf="isSubmit && !password">Password is required</p>
+        </div>
+        <div class="mb-3">
+            <label for="confirmpassword" class="form-label">Confirm Password<span style="color: red;">*</span></label>
+            <input type="password" class="form-control" id="confirmpassword" placeholder="confirm password" [(ngModel)]="confirmPassword">
+            <p style="color: red;" *ngIf="isSubmit && !confirmPassword">Confirm Password is required</p>
+            <p style="color: red;" *ngIf="isSubmit && (confirmPassword != password)">Password and Confirm Password are not same</p>
+        </div>
+    </div>
+    <div class="modal-footer">
+       <button type="button" class="btn btn-secondary" (click)="modalRef.hide()">Close</button>
+       <button type="button" class="btn btn-primary" (click)="addManager()">Save</button><div *ngIf="isLoading" class="spinner-border"  role="status">
+        <span class="visually-hidden">Loading...</span></div>
+    </div>
+ </ng-template>
+
+ <!-- Team Member -->
+ <ng-template #memberTemplate>
+    <div class="modal-header">
+       <h4 class="modal-title pull-left">Add Team Member</h4>
+       <button type="button" class="close pull-right" aria-label="Close" (click)="modalRef.hide()">
+          <span aria-hidden="true">×</span>
+       </button>
+    </div>
+    <div class="modal-body">
+        <div class="row">
+            <div class="col-6">
+                <div class="mb-3">
+                    <label for="username" class="form-label">Username<span style="color: red;">*</span></label>
+                    <input type="text" class="form-control" id="username" placeholder="Username" [(ngModel)]="userName">
+                    <p style="color: red;" *ngIf="isSubmit && !userName">Username is required</p>
+                </div>
+                <div class="mb-3">
+                    <label for="passcode" class="form-label">Passcode<span style="color: red;">*</span></label>
+                    <input type="text" class="form-control" id="passcode" placeholder="Passcode" [(ngModel)]="passcode">
+                    <p style="color: red;" *ngIf="isSubmit && !passcode">Passcode is required</p>
+                </div>
+                <div class="mb-3">
+                    <label for="yoexperience" class="form-label">Years of Experience</label>
+                    <input type="number" class="form-control" id="yoexperience" placeholder="Years of Experience" [(ngModel)]="yearsOfExperience">
+                </div>
+                <div class="mb-3">
+                    <label for="skills" class="form-label">Skills<span style="color: red;">*</span></label>
+                    <input type="text" class="form-control" id="skills" placeholder="Comma seperated. Ex: .NET, Angular" [(ngModel)]="skills">
+                    <p style="color: red;" *ngIf="isSubmit && !skills">Skills are required</p>
+                    <p style="color: red;" *ngIf="isSubmit && skills && !isValidSkills">Minimum 3 Skills are required</p>
+                </div>
+                <div class="mb-3">
+                  <label for="description" class="form-label">Description<span style="color: red;">*</span></label>
+                  <input type="text" class="form-control" id="description" placeholder="Description" [(ngModel)]="description">
+                  <p style="color: red;" *ngIf="isSubmit && !description">Description is required</p>
+              </div>
+            </div>
+            <div class="col-6">
+                <div class="mb-3">
+                    <label for="confirmpassword" class="form-label">Project<span style="color: red;">*</span></label>
+                    <input [(ngModel)]="customSelected"
+       [typeahead]="projects"
+       typeaheadOptionField="name"
+       placeholder="typeahead project name"
+       class="form-control"
+       (typeaheadOnSelect)="typeaheadOnSelect($event)">
+       <p style="color: red;" *ngIf="isSubmit && !customSelected">Project is required</p>
+                </div>
+                <div class="mb-3">
+                    <label for="confirmpassword" class="form-label">Project Start Date<span style="color: red;">*</span></label>
+                    <input type="text"
+           placeholder="Datepicker"
+           class="form-control"
+           bsDatepicker [(ngModel)]="startDate">
+           <p style="color: red;" *ngIf="isSubmit && !startDate">Start Date is required</p>
+                </div>
+                <div class="mb-3">
+                    <label for="confirmpassword" class="form-label">Project End Date<span style="color: red;">*</span></label>
+                    <input type="text"
+           placeholder="Datepicker"
+           class="form-control"
+           bsDatepicker [(ngModel)]="endDate">
+           <p style="color: red;" *ngIf="isSubmit && !endDate">End Date is required</p>
+           <p style="color: red;" *ngIf="isSubmit && endDate && !isValidDate">End Date should be greater thand start date</p>
+                </div>
+                <div class="mb-3">
+                  <label for="allocationPercentage" class="form-label">Allocation Percentage<span style="color: red;">*</span></label>
+                  <input type="number" min="0" max="100" class="form-control" id="Allocation Percentage" placeholder="100" [(ngModel)]="allocationPercentage">
+                  <p style="color: red;" *ngIf="isSubmit && !allocationPercentage">Percentage is required</p>
+              </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal-footer">
+       <button type="button" class="btn btn-secondary" (click)="modalRef.hide()">Close</button>
+       <button type="button" class="btn btn-primary" (click)="addMember()">Save</button><div *ngIf="isLoading" class="spinner-border"  role="status">
+        <span class="visually-hidden">Loading...</span>
+      </div>
+    </div>
+ </ng-template>
+
+ <ng-template #assignTask>
+  <div class="modal-header">
+     <h4 class="modal-title pull-left">Assign Task (Member Name: <strong>{{userName}}</strong>)</h4>
+     <button type="button" class="close pull-right" aria-label="Close" (click)="modalRef.hide()">
+        <span aria-hidden="true">×</span>
+     </button>
+  </div>
+  <div class="modal-body">
+      <div class="row">
+          <div class="col-6">
+              <div class="mb-3">
+                  <label for="username" class="form-label">Task Name<span style="color: red;">*</span></label>
+                  <input type="text" class="form-control" id="username" placeholder="Task Name" [(ngModel)]="name">
+                  <p style="color: red;" *ngIf="isSubmit && !name">Task Name is required</p>
+              </div>
+              <div class="mb-3">
+                <label for="description" class="form-label">Deliverables<span style="color: red;">*</span></label>
+                <textarea type="text" class="form-control" id="description" placeholder="Deliverables" [(ngModel)]="description"></textarea>
+                <p style="color: red;" *ngIf="isSubmit && !description">Deliverables are required</p>
+            </div>
+          </div>
+          <div class="col-6">
+              <div class="mb-3">
+                  <label for="confirmpassword" class="form-label">Task Start Date<span style="color: red;">*</span></label>
+                  <input type="text"
+         placeholder="Datepicker"
+         class="form-control"
+         bsDatepicker [(ngModel)]="startDate">
+         <p style="color: red;" *ngIf="isSubmit && !startDate">Start Date is required</p>
+              </div>
+              <div class="mb-3">
+                  <label for="confirmpassword" class="form-label">Task End Date<span style="color: red;">*</span></label>
+                  <input type="text"
+         placeholder="Datepicker"
+         class="form-control"
+         bsDatepicker [(ngModel)]="endDate">
+         <p style="color: red;" *ngIf="isSubmit && !endDate">End Date is required</p>
+         <p style="color: red;" *ngIf="isSubmit && endDate && !isValidDate">End Date should be greater thand start date</p>
+              </div>
+          </div>
+      </div>
+  </div>
+  <div class="modal-footer">
+     <button type="button" class="btn btn-secondary" (click)="modalRef.hide()">Close</button>
+     <button type="button" class="btn btn-primary" (click)="assign()">Save</button><div *ngIf="isLoading" class="spinner-border"  role="status">
+      <span class="visually-hidden">Loading...</span>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #updateAllocationTemplate>
+  <div class="modal-header">
+     <h4 class="modal-title pull-left">Update Allocation (Member Name: <strong>{{userName}}</strong>)</h4>
+     <button type="button" class="close pull-right" aria-label="Close" (click)="modalRef.hide()">
+        <span aria-hidden="true">×</span>
+     </button>
+  </div>
+  <div class="modal-body">
+      <div class="row">
+          <div class="col-6">
+              <div class="mb-3">
+                <label for="allocationPercentage" class="form-label">Present Allocation Percentage<span style="color: red;">*</span></label>
+                <input type="number" min="0" max="100" class="form-control" id="Allocation Percentage" placeholder="100" [(ngModel)]="allocationPercentage">
+                <p style="color: red;" *ngIf="isSubmit && !allocationPercentage">Percentage is required</p>
+            </div>
+          </div>
+      </div>
+  </div>
+  <div class="modal-footer">
+     <button type="button" class="btn btn-secondary" (click)="modalRef.hide()">Close</button>
+     <button type="button" class="btn btn-primary" (click)="updateAllocationPercentage()">Save</button><div *ngIf="isLoading" class="spinner-border"  role="status">
+      <span class="visually-hidden">Loading...</span>
+    </div>
+  </div>
+</ng-template>

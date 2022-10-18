@@ -17,8 +17,8 @@
             <!-- Password input -->
             <div class="form-outline mb-3">
               <input type="password" id="form3Example4" class="form-control form-control-lg"
-                placeholder="Enter password" name="password"/>
-              <label class="form-label" for="form3Example4" [(ngModel)]="password">Password</label>
+                placeholder="Enter password" name="password"  [(ngModel)]="password"/>
+              <label class="form-label" for="form3Example4">Password</label>
             </div>
   
             <!-- <div class="d-flex justify-content-between align-items-center">
@@ -34,7 +34,10 @@
             <div class="text-center text-lg-start mt-4 pt-2">
               <button type="button" class="btn btn-primary btn-lg"
                 style="padding-left: 2.5rem; padding-right: 2.5rem;" (click)="login()">Login</button>
-              <p class="small fw-bold mt-2 pt-1 mb-0">Don't have an account? <a href="#!"
+                <div *ngIf="isLoading" class="spinner-border"  role="status">
+                  <span class="visually-hidden">Loading...</span>
+                </div>
+              <p class="small fw-bold mt-2 pt-1 mb-0">Don't have an account? <a href="/registration"
                   class="link-danger">Register</a></p>
             </div>
   
@@ -43,3 +46,27 @@
       </div>
     </div>
   </section>
+
+  <!-- <button type="button" class="btn btn-primary" (click)="openModal(template)">Open modal</button>
+
+<ng-template #template>
+   <div class="modal-header">
+      <h4 class="modal-title pull-left">Modal</h4>
+      <button type="button" class="close pull-right" aria-label="Close" (click)="modalRef.hide()">
+         <span aria-hidden="true">×</span>
+      </button>
+   </div>
+   <div class="modal-body">
+    <div class="mb-3">
+      <label for="nav-item" class="form-label">Name<span style="color: red;">*</span></label>
+      <input type="email" class="form-control" id="name" placeholder="First & Last Name" [(ngModel)]="userName">
+    </div>
+    <div class="mb-3">
+        <label for="username" class="form-label">Username<span style="color: red;">*</span></label>
+        <input type="text" class="form-control" id="username" placeholder="Username" [(ngModel)]="userName">
+    </div>
+   </div>
+   <div class="modal-footer">
+      <button type="button" class="btn btn-default" (click)="modalRef.hide()">Close</button>
+   </div>
+</ng-template> -->

@@ -8,8 +8,8 @@
     </div>
     <div class="col-10" *ngIf="isManagerList">
         <div class="row ">
-            <div class="col-3 col-offset-3">
-                <button type="button" class="btn btn-primary" (click)="openModal(managerTemplate,false)">
+            <div class="col-md-11 offset-md-11">
+                <button type="button" class="btn btn-sm btn-green" (click)="openModal(managerTemplate,false)">
                     Add Manager
                 </button>
             </div>
@@ -21,38 +21,36 @@
                     <thead>
                       <tr>
                         <th scope="col">Username</th>
-                        <th scope="col">Name</th>
                         <th scope="col">Years Of Experience</th>
                       </tr>
                     </thead>
                     <tbody>
                       <tr *ngFor="let user of managers | pagination:bigCurrentPage:itemsPerPage">
                         <td>{{user.userName}}</td>
-                        <td>{{user.name}}</td>
                         <td>{{user.yearsOfExperience}}</td>
                       </tr>
                     </tbody>
                   </table>
-                  <pagination [totalItems]="totalCount" *ngIf="totalCount != 0" [(ngModel)]="bigCurrentPage" [itemsPerPage]="itemsPerPage"></pagination>
+                  <pagination [totalItems]="totalCount" *ngIf="totalCount != 0 && totalCount > 4" [(ngModel)]="bigCurrentPage" [itemsPerPage]="itemsPerPage"></pagination>
             </div>
         </div>
         
     </div>
     <div class="col-9" *ngIf="isMemberList">
         <div class="row ">
-            <div class="col-3">
-                <button type="button" class="btn btn-primary" (click)="openModal(memberTemplate)">
+            <div class="col-md-11 offset-md-11">
+                <button type="button" class="btn btn-sm btn-green" (click)="openModal(memberTemplate)">
                     Add Team Member
                 </button>
             </div>
         </div>
+        <br>
         <div class="row">
             <div class="col-12">
-                <table class="table">
+                <table class="table" style="height: 300px;">
                     <thead>
                       <tr>
                         <th scope="col">Username</th>
-                        <th scope="col">Name</th>
                         <th scope="col">Years Of Experience</th>
                         <th scope="col">Skills</th>
                         <th scope="col">Project Start Date</th>
@@ -67,17 +65,16 @@
                       </tr>
                       <tr *ngFor="let user of teamMembers | pagination:bigCurrentPage:itemsPerPage">
                         <td>{{user.userName}}</td>
-                        <td>{{user.name}}</td>
                         <td>{{user.yearsOfExperience}}</td>
                         <td>{{user.skills}}</td>
                         <td>{{user.startDate | date }}</td>
                         <td>{{user.endDate | date }}</td>
-                        <td><button type="button" class="btn btn-primary btn-sm" (click)="currentUser = user;openModal(assignTask);">Add</button></td>
-                        <td><button type="button" class="btn btn-primary btn-sm" (click)="currentUser = user;openModal(updateAllocationTemplate);">{{user.allowcationPercentage}}</button></td>
+                        <td><button type="button" class="btn btn-sm btn-green" (click)="currentUser = user;openModal(assignTask);">Add Task</button></td>
+                        <td><button type="button" class="btn btn-sm btn-green" (click)="currentUser = user;openModal(updateAllocationTemplate);">{{user.allowcationPercentage}}</button></td>
                       </tr>
                     </tbody>
                   </table>
-                  <pagination [totalItems]="totalCount" *ngIf="totalCount != 0" [(ngModel)]="bigCurrentPage" [itemsPerPage]="itemsPerPage"></pagination>
+                  <pagination [totalItems]="totalCount" *ngIf="totalCount != 0 && totalCount > 4" [(ngModel)]="bigCurrentPage" [itemsPerPage]="itemsPerPage"></pagination>
             </div>
         </div>
         
@@ -136,6 +133,9 @@
     </div>
     <div class="modal-body">
         <div class="row">
+            <div>
+              <alert [type]="alert.type" [dismissible]="dismissible" *ngIf="isShowAlert">{{ alert.msg }}</alert>
+            </div>
             <div class="col-6">
                 <div class="mb-3">
                     <label for="username" class="form-label">Username<span style="color: red;">*</span></label>
@@ -145,11 +145,12 @@
                 <div class="mb-3">
                     <label for="passcode" class="form-label">Passcode<span style="color: red;">*</span></label>
                     <input type="text" class="form-control" id="passcode" placeholder="Passcode" [(ngModel)]="passcode">
+                    <button type="button" class="btn btn-secondary btn-sm" [cdkCopyToClipboard]="passcode" readonly>Copy to clipboard</button>
                     <p style="color: red;" *ngIf="isSubmit && !passcode">Passcode is required</p>
                 </div>
                 <div class="mb-3">
                     <label for="yoexperience" class="form-label">Years of Experience</label>
-                    <input type="number" class="form-control" id="yoexperience" placeholder="Years of Experience" [(ngModel)]="yearsOfExperience">
+                    <input type="number" class="form-control" id="yoexperience" placeholder="Years of Experience" [(ngModel)]="yearsOfExperience" min="0" max="100">
                 </div>
                 <div class="mb-3">
                     <label for="skills" class="form-label">Skills<span style="color: red;">*</span></label>
@@ -159,44 +160,46 @@
                 </div>
                 <div class="mb-3">
                   <label for="description" class="form-label">Description<span style="color: red;">*</span></label>
-                  <input type="text" class="form-control" id="description" placeholder="Description" [(ngModel)]="description">
+                  <textarea type="text" class="form-control" id="description" placeholder="Description" [(ngModel)]="description"></textarea>
                   <p style="color: red;" *ngIf="isSubmit && !description">Description is required</p>
               </div>
             </div>
-            <div class="col-6">
-                <div class="mb-3">
-                    <label for="confirmpassword" class="form-label">Project<span style="color: red;">*</span></label>
-                    <input [(ngModel)]="customSelected"
-       [typeahead]="projects"
-       typeaheadOptionField="name"
-       placeholder="typeahead project name"
-       class="form-control"
-       (typeaheadOnSelect)="typeaheadOnSelect($event)">
-       <p style="color: red;" *ngIf="isSubmit && !customSelected">Project is required</p>
-                </div>
-                <div class="mb-3">
-                    <label for="confirmpassword" class="form-label">Project Start Date<span style="color: red;">*</span></label>
-                    <input type="text"
-           placeholder="Datepicker"
-           class="form-control"
-           bsDatepicker [(ngModel)]="startDate">
-           <p style="color: red;" *ngIf="isSubmit && !startDate">Start Date is required</p>
-                </div>
-                <div class="mb-3">
-                    <label for="confirmpassword" class="form-label">Project End Date<span style="color: red;">*</span></label>
-                    <input type="text"
-           placeholder="Datepicker"
-           class="form-control"
-           bsDatepicker [(ngModel)]="endDate">
-           <p style="color: red;" *ngIf="isSubmit && !endDate">End Date is required</p>
-           <p style="color: red;" *ngIf="isSubmit && endDate && !isValidDate">End Date should be greater thand start date</p>
-                </div>
-                <div class="mb-3">
-                  <label for="allocationPercentage" class="form-label">Allocation Percentage<span style="color: red;">*</span></label>
-                  <input type="number" min="0" max="100" class="form-control" id="Allocation Percentage" placeholder="100" [(ngModel)]="allocationPercentage">
-                  <p style="color: red;" *ngIf="isSubmit && !allocationPercentage">Percentage is required</p>
+            <div class="col-6" *ngIf="yearsOfExperience >= 4">
+              <div class="mb-3">
+                  <label for="confirmpassword" class="form-label">Project<span style="color: red;">*</span></label>
+                  <input [(ngModel)]="projectselected"
+      [typeahead]="projects"
+      typeaheadOptionField="name"
+      placeholder="typeahead project name"
+      class="form-control"
+      (typeaheadOnSelect)="typeaheadOnSelect($event)">
+      <p style="color: red;" *ngIf="isSubmit && !projectselected">Project is required</p>
               </div>
+              <div class="mb-3">
+                  <label for="confirmpassword" class="form-label">Project Start Date<span style="color: red;">*</span></label>
+                  <input type="text"
+          placeholder="Datepicker"
+          class="form-control"
+          bsDatepicker [(ngModel)]="startDate"
+          [minDate]="minDate" readonly>
+          <p style="color: red;" *ngIf="isSubmit && !startDate">Start Date is required</p>
+              </div>
+              <div class="mb-3">
+                  <label for="confirmpassword" class="form-label">Project End Date<span style="color: red;">*</span></label>
+                  <input type="text"
+          placeholder="Datepicker"
+          class="form-control"
+          bsDatepicker [(ngModel)]="endDate"
+          [minDate]="minDate" readonly>
+          <p style="color: red;" *ngIf="isSubmit && !endDate">End Date is required</p>
+          <p style="color: red;" *ngIf="isSubmit && endDate && !isValidDate">End Date should be greater thand start date</p>
+              </div>
+              <div class="mb-3">
+                <label for="allocationPercentage" class="form-label">Allocation Percentage<span style="color: red;">*</span></label>
+                <input type="number" min="0" max="100" class="form-control" id="Allocation Percentage" placeholder="100" [(ngModel)]="allocationPercentage">
+                <p style="color: red;" *ngIf="isSubmit && !allocationPercentage">Percentage is required</p>
             </div>
+          </div>
         </div>
     </div>
     <div class="modal-footer">
@@ -234,7 +237,9 @@
                   <input type="text"
          placeholder="Datepicker"
          class="form-control"
-         bsDatepicker [(ngModel)]="startDate">
+         bsDatepicker [(ngModel)]="startDate"
+         [minDate]="minDate"
+         [maxDate]="maxDate" readonly>
          <p style="color: red;" *ngIf="isSubmit && !startDate">Start Date is required</p>
               </div>
               <div class="mb-3">
@@ -242,7 +247,9 @@
                   <input type="text"
          placeholder="Datepicker"
          class="form-control"
-         bsDatepicker [(ngModel)]="endDate">
+         bsDatepicker [(ngModel)]="endDate"
+         [minDate]="minDate"
+         [maxDate]="maxDate" readonly>
          <p style="color: red;" *ngIf="isSubmit && !endDate">End Date is required</p>
          <p style="color: red;" *ngIf="isSubmit && endDate && !isValidDate">End Date should be greater thand start date</p>
               </div>

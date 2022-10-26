@@ -30,7 +30,7 @@ export class RegistrationComponent implements OnInit {
     this.memberService.getStatus({"UserName": this.userName, 
     "Passcode": this.passcode, 
     "Name":this.name
-    }).subscribe(data => {
+    }).subscribe((data) => {
       this.isLoading = false;
       if(data.code == 3){
         this.isValidUser = true;
@@ -40,14 +40,19 @@ export class RegistrationComponent implements OnInit {
       {
         this.isValidUser = false; 
         this.invalidform = true;
-        this.message = data.code == 2? "User doesn't exists" : "User already created";
+        this.message = this.getStatusMessage(data.code);
       }
     })
   }
 
   updateUser(){
+    
+    if(this.password != this.confirmPassword){
+      this.invalidform = true;
+      this.message = "password and confirm password are not same";
+      return;
+    }
     this.isLoading = true;
-    this.message = "password and confirm password are not same";
     this.memberService.updateUser(
       {"UserName": this.userName, 
 "Passcode": this.passcode, 
@@ -55,8 +60,17 @@ export class RegistrationComponent implements OnInit {
 "Password":this.password
 }
     ).subscribe(data => {
-       this.success = true;
        this.isLoading = false;
+       if(data.code == 3){
+        this.success = true;
+        this.invalidform = false;
+      }
+      else
+      {
+        this.isValidUser = false; 
+        this.invalidform = true;
+        this.message = this.getStatusMessage(data.code);
+      }
     })
   }
 
@@ -65,5 +79,15 @@ export class RegistrationComponent implements OnInit {
         this.router.navigate(['/login']);
     else
       this.isValidUser = false;
+  }
+
+  login(){
+    this.router.navigate(['/login']);
+  }
+
+  getStatusMessage(code: number) : string {
+    if(code == 2) return "User doesn't exists";
+    else if(code == 1) return "User already created";
+    return "Incorrect Passcode";
   }
 }

@@ -10,7 +10,7 @@ import { TokenStorageService } from 'src/app/services/token-storage.service';
 export class TeamMemberComponent implements OnInit {
   totalCount:number = 0;
   bigCurrentPage:number = 1;
-  itemsPerPage: number = 2;
+  itemsPerPage: number = 5;
 
   projectName?: string;
   projectStartDate?: string;

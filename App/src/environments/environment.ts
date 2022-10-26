@@ -4,7 +4,7 @@
 
 export const environment = {
   production: false,
-  apiURL: 'https://localhost:44321/projectmgmt/api/v1/'
+  apiURL: 'https://project-management-gateway.azure-api.net/projectmgmt/api/v1/'
 };
 
 /*

@@ -1,21 +1,29 @@
-<div class="container" role="main">
-  <div *ngIf="isUserLogin"> 
-    <nav class="navbar navbar-expand-lg navbar-light bg-">
-      <div class="container-fluid">
-        <div class="collapse navbar-collapse" id="navbarSupportedContent">
-          <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-            <li class="nav-item">
-              <a class="nav-link active" aria-current="page" href="#">Welcome, {{username}}</a>
-              <h5><strong>Project Management Tracker</strong></h5>
-            </li>
-          </ul>
-          <div class="d-flex">
-            <button id="button-basic" type="button" class="btn btn-secondary" (click)="signOut()">Sign Out</button>
-          </div>
+<header>
+  <nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top">
+    <a class="navbar-brand" href="#"><strong>Project Management Tracker</strong></a>
+  </nav>
+  <nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top">
+    <div class="container-fluid">
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+          <li class="nav-item">
+            <h5><strong>Project Management Tracker</strong></h5>
+          </li>
+        </ul>
+        <div class="d-flex" *ngIf="isUserLogin">
+          <button id="button-basic" type="button" class="btn btn-secondary" (click)="signOut()">Sign Out</button>
         </div>
       </div>
-    </nav>
-    <hr>
-  </div>
+    </div>
+  </nav>
+</header>
+<div class="container" role="main" style="padding-top: 60px;">
+  <a *ngIf="isUserLogin" class="nav-link active" aria-current="page" href="#">Welcome, <strong>{{username}}</strong></a>
+  <br>
   <router-outlet></router-outlet>
 </div>
+<footer class="text-center text-lg-start bg-light text-muted fixed-bottom">
+  <div class="text-center" style="background-color: rgba(0, 0, 0, 0.05);">
+    © 2022 Copyright
+  </div>
+</footer>

@@ -46,8 +46,8 @@ export class TeamManagerComponent implements OnInit {
   managers:any[] = [];
   totalCount:number = 0;
   bigCurrentPage:number = 1;
-  itemsPerPage: number = 2;
-  customSelected?: string;
+  itemsPerPage: number = 5;
+  projectselected?: string;
   projects:any[] = [];
   projectid: any;
   startDate?: Date;
@@ -73,6 +73,10 @@ export class TeamManagerComponent implements OnInit {
       msg: `Allocation updated successfully.`
     },
     {
+      type: 'success',
+      msg: `Copied.`
+    },
+    {
       type: 'info',
       msg: `This alert needs your attention, but it's not super important.`
     },
@@ -83,6 +87,9 @@ export class TeamManagerComponent implements OnInit {
   ];
   alert = this.defaultAlerts[0];
   isUserCreated:boolean = false;
+  isShowAlert:boolean = false;
+  minDate: Date = new Date();
+  maxDate?: Date;
 
   constructor(private modalService: BsModalService, 
     private managerService: ManagerService, 
@@ -121,17 +128,21 @@ export class TeamManagerComponent implements OnInit {
   openModal(template: TemplateRef<any>, isMember:boolean = true) {
     if(this.currentUser.userName){
       this.userName = this.currentUser.userName;
-    }
-    if(this.currentUser.userName){
-        this.allocationPercentage = this.currentUser.allowcationPercentage
+      this.allocationPercentage = this.currentUser.allowcationPercentage;
+      this.maxDate = new Date(this.currentUser.endDate);
     }
     this.isSubmit = false;
     this.isLoading = false;
+    this.isShowAlert = false;
+    this.isUserCreated = false;
+    
     let className: string = isMember? "modal-lg": "modal-md";
     const config: ModalOptions = { class: className };
     this.modalRef = this.modalService.show(template, config);
     if(isMember)
         this.passcode = this.generagePasscode(10);
+    else
+      this.userName = "";
   }
 
   addManager(){
@@ -187,9 +198,16 @@ export class TeamManagerComponent implements OnInit {
         "YearsOfExperience":this.yearsOfExperience,
         "ManagerId": +this.logInuserInfo.Id
       }).subscribe(val => {
+
         this.isLoading = false;
         this.modalRef.hide();
         this.isUserCreated = true;
+
+        this.userName = "";
+        this.description = "";
+        this.skills = "";
+        this.yearsOfExperience = 0;
+        this.projectselected = undefined;
       });
     }
   }
@@ -198,19 +216,25 @@ export class TeamManagerComponent implements OnInit {
     if(this.userName 
       && this.passcode 
       && this.skills 
-      && this.description 
-      && this.customSelected 
-      && this.startDate 
-      && this.endDate){
+      && this.description){
         if(this.skills.split(',').length > 2)
           this.isValidSkills = true;
         else
           this.isValidSkills = false;
-        
-        if(this.startDate > this.endDate)
-          this.isValidDate = false;
-        else
-          this.isValidDate = true;
+
+        if(this.yearsOfExperience >= 4){
+          if(!this.projectselected)
+               return false;
+               
+          if(!this.startDate || !this.endDate){
+              return false;
+          }
+
+          if(this.startDate > this.endDate)
+            this.isValidDate = false;
+          else
+            this.isValidDate = true;
+        }
 
         return this.isValidSkills && this.isValidDate;
       }
@@ -251,6 +275,10 @@ export class TeamManagerComponent implements OnInit {
           this.isLoading = false;
           this.modalRef.hide();
           this.isUserCreated = true;
+          this.name = "";
+          this.description = "";
+          this.startDate = undefined;
+          this.endDate = undefined;
         });
       }
       else{
@@ -285,4 +313,15 @@ export class TeamManagerComponent implements OnInit {
       this.getMembers();
     });
   }
+
+  // copy(data:string){
+  //   this.alert = this.defaultAlerts[3];
+  //   this.isShowAlert = true;
+  //   console.log("Copied....")
+  // }
+
+  checkProjectAssignment() : boolean {
+    return this.yearsOfExperience >= 4;
+  }
+
 }

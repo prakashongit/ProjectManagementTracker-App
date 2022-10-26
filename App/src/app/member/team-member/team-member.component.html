@@ -1,32 +1,32 @@
-<div class="row">
-    <div *ngIf="isLoading" class="spinner-border"  role="status">
-        <span class="visually-hidden">Loading...</span>
-    </div>
+<div *ngIf="isLoading" class="spinner-border"  role="status">
+    <span class="visually-hidden">Loading...</span>
+</div>
+<div class="row" *ngIf="projectName">
     <p><strong>Project Details</strong></p>
-    <div class="col-3">
-        <label>Name: {{projectName}}</label>
+    <div class="col-3" *ngIf="projectName">
+        <label>Name: <strong>{{projectName}}</strong></label>
     </div>
     <div class="col-3">
-        <label>Start Date: {{projectStartDate | date}}</label>
+        <label>Start Date: <strong>{{projectStartDate | date}}</strong> </label>
     </div>
     <div class="col-3">
-        <label>End Date: {{projectEndDate | date}}</label>
+        <label>End Date: <strong>{{projectEndDate | date}}</strong></label>
     </div>
     <div class="col-3">
-        <label>Allocation Percentage: {{allocationPercentage}}%</label>
+        <label>Allocation Percentage:  <strong>{{allocationPercentage}}</strong>%</label>
     </div>
 </div>
 <br>
 <div class="row">
     <p><strong>Profile Details</strong></p>
     <div class="col-3">
-        <label>Name: {{name}}</label>
+        <label>Name:  <strong>{{name}}</strong></label>
     </div>
     <div class="col-3">
-        <label>Skills: {{skills}}</label>
+        <label>Skills: <strong>{{skills}}</strong></label>
     </div>
     <div class="col-3">
-        <label>Years of Experience: {{experience}}</label>
+        <label>Years of Experience: <strong>{{experience}}</strong></label>
     </div>
 </div>
 
@@ -55,6 +55,6 @@
             </accordion-group>
          </accordion>
          <br>
-          <pagination [totalItems]="totalCount" *ngIf="totalCount != 0" [(ngModel)]="bigCurrentPage" [itemsPerPage]="itemsPerPage"></pagination>
+         <pagination [totalItems]="totalCount" *ngIf="totalCount != 0 && totalCount > 4" [(ngModel)]="bigCurrentPage" [itemsPerPage]="itemsPerPage"></pagination>
     </div>
 </div>

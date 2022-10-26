@@ -17,6 +17,7 @@ export class LoginComponent implements OnInit {
   password: string | undefined;
   isLoading: boolean = false;
   modalRef: BsModalRef<any> = new BsModalRef<any>();
+  isInvalidUP:boolean = false;
 
   constructor(private router: Router, private authService: AuthService, private tokenService: TokenStorageService, private modalService: BsModalService) { }
 
@@ -28,26 +29,37 @@ export class LoginComponent implements OnInit {
   }
 
   login(){
+    this.isInvalidUP = false;
     this.isLoading = true;
     this.authService.login(this.username, this.password).subscribe(res => {
       this.isLoading = false;
-      let token:any = res.jwtToken;
-      this.tokenService.saveToken(token);
-      let tokenBody = JSON.parse(atob(token.split('.')[1]));
-      let user: UserInfo =<UserInfo> {UserName: tokenBody[JWTConstants.UserName], 
-        Role:tokenBody[JWTConstants.Role],
-        Id: tokenBody[JWTConstants.ID]
-      };
-      this.tokenService.saveUser(user);
-      this.router.navigate(['/member']); 
-      if(user.Role == Role.Admin){
-        this.router.navigate(['/manager']); 
-      }
-      else if(user.Role == Role.Member){
+      if(res.isValidUser){
+        let token:any = res.jwtToken;
+        this.tokenService.saveToken(token);
+        let tokenBody = JSON.parse(atob(token.split('.')[1]));
+        let user: UserInfo =<UserInfo> {UserName: tokenBody[JWTConstants.UserName], 
+          Role:tokenBody[JWTConstants.Role],
+          Id: tokenBody[JWTConstants.ID]
+        };
+        this.tokenService.saveUser(user);
         this.router.navigate(['/member']); 
+        if(user.Role == Role.Admin){
+          this.router.navigate(['/manager']); 
+        }
+        else if(user.Role == Role.Member){
+          this.router.navigate(['/member']); 
+        }
+  
       }
-
+      else {
+        this.isInvalidUP = true;
+      }
+      
     })
+  }
+
+  goToRegistrationPage(){
+    this.router.navigate(['/registration']); 
   }
 
 }

@@ -8,7 +8,7 @@
     </div>
     <div class="col-10" *ngIf="isManagerList">
         <div class="row ">
-            <div class="col-md-11 offset-md-11">
+            <div class="col-md-10 offset-md-10">
                 <button type="button" class="btn btn-sm btn-green" (click)="openModal(managerTemplate,false)">
                     Add Manager
                 </button>
@@ -21,7 +21,7 @@
                     <thead>
                       <tr>
                         <th scope="col">Username</th>
-                        <th scope="col">Years Of Experience</th>
+                        <th scope="col">Experience (in years)</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -36,9 +36,9 @@
         </div>
         
     </div>
-    <div class="col-9" *ngIf="isMemberList">
+    <div class="col-10" *ngIf="isMemberList">
         <div class="row ">
-            <div class="col-md-11 offset-md-11">
+            <div class="col-md-10 offset-md-10">
                 <button type="button" class="btn btn-sm btn-green" (click)="openModal(memberTemplate)">
                     Add Team Member
                 </button>
@@ -51,7 +51,7 @@
                     <thead>
                       <tr>
                         <th scope="col">Username</th>
-                        <th scope="col">Years Of Experience</th>
+                        <th scope="col">Experience (in Years)</th>
                         <th scope="col">Skills</th>
                         <th scope="col">Project Start Date</th>
                         <th scope="col">Project End Date</th>
